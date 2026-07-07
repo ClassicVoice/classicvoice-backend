@@ -41,10 +41,16 @@ app.post("/tts", async (req, res) => {
       })
     });
 
-    const audio = await response.arrayBuffer();
+    if (!response.ok) {
+  const error = await response.text();
+  console.error(error);
+  return res.status(response.status).send(error);
+}
 
-    res.setHeader("Content-Type", "audio/mpeg");
-    res.send(Buffer.from(audio));
+const audio = await response.arrayBuffer();
+
+res.setHeader("Content-Type", "audio/mpeg");
+res.send(Buffer.from(audio));
 
   } catch (err) {
     console.error(err);
